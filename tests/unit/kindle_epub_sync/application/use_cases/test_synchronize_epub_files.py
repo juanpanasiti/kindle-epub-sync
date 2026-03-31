@@ -192,7 +192,7 @@ def test_reports_rename_error_and_skips_following_actions() -> None:
     )
 
     assert report.results[0].status == FileProcessingStatus.FAILED_RENAME
-    assert report.results[0].error_message == "rename failed"
+    assert report.results[0].error_message == "rename failed: rename failed"
     assert email_gateway.calls == []
     assert drive_gateway.moves == []
 
@@ -209,6 +209,7 @@ def test_reports_download_error_and_does_not_move() -> None:
     )
 
     assert report.results[0].status == FileProcessingStatus.FAILED_DOWNLOAD
+    assert report.results[0].error_message == "download failed: download failed"
     assert email_gateway.calls == []
     assert drive_gateway.moves == []
 
@@ -225,6 +226,7 @@ def test_reports_move_error_after_successful_email() -> None:
     )
 
     assert report.results[0].status == FileProcessingStatus.FAILED_MOVE
+    assert report.results[0].error_message == "move failed: move failed"
     assert report.results[0].email_attempts == 1
     assert len(email_gateway.calls) == 1
 

@@ -5,6 +5,7 @@ from dataclasses import asdict
 
 from kindle_epub_sync.domain.entities.processing_report import (
     FileProcessingResult,
+    FileProcessingStatus,
     SynchronizationReport,
 )
 
@@ -46,6 +47,14 @@ def _render_file_result(result: FileProcessingResult) -> str:
         f"final_name={result.final_name}",
         f"email_attempts={result.email_attempts}",
     ]
-    if result.error_message:
-        parts.append(f"error={result.error_message}")
+
+    if result.status in {
+        FileProcessingStatus.FAILED_RENAME,
+        FileProcessingStatus.FAILED_DOWNLOAD,
+        FileProcessingStatus.FAILED_EMAIL,
+        FileProcessingStatus.FAILED_MOVE,
+    }:
+        parts.append(f"failed_step={result.status}")
+        parts.append(f"error={result.error_message or 'unknown error'}")
+
     return " | ".join(parts)

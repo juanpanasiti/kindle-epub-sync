@@ -40,6 +40,8 @@ def test_render_report_as_text_contains_summary_and_file_lines() -> None:
     assert "- total_files: 2" in output
     assert "status=success" in output
     assert "status=failed_email" in output
+    assert "failed_step=failed_email" in output
+    assert "error=smtp failed" in output
 
 
 def test_render_report_as_json_contains_expected_fields() -> None:

@@ -153,6 +153,8 @@ Stage 5 introduces runtime entrypoints for manual execution and periodic schedul
 - `kindle-epub-sync schedule`: runs one immediate synchronization and then repeats.
 - `SYNC_INTERVAL_MINUTES` controls schedule frequency and defaults to `5`.
 - `--json` is available for both commands to print structured report output.
+- Failed files are retried in the next execution cycle because they are not moved.
+- Text output includes explicit failure step and error details for failed files.
 
 ## Stage 6 Scope
 

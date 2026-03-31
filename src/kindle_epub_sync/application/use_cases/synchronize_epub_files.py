@@ -77,7 +77,7 @@ class SynchronizeEpubFilesUseCase:
                     original_name=original_name,
                     final_name=original_name,
                     status=FileProcessingStatus.FAILED_RENAME,
-                    error_message=str(error),
+                    error_message=self._build_error_message(step="rename", error=error),
                 )
 
             existing_names.discard(original_name)
@@ -91,7 +91,7 @@ class SynchronizeEpubFilesUseCase:
                 original_name=original_name,
                 final_name=target_name,
                 status=FileProcessingStatus.FAILED_DOWNLOAD,
-                error_message=str(error),
+                error_message=self._build_error_message(step="download", error=error),
             )
 
         email_attempts = 0
@@ -104,7 +104,7 @@ class SynchronizeEpubFilesUseCase:
                 email_error_message = None
                 break
             except Exception as error:
-                email_error_message = str(error)
+                email_error_message = self._build_error_message(step="email", error=error)
 
         if email_error_message is not None:
             return FileProcessingResult(
@@ -128,7 +128,7 @@ class SynchronizeEpubFilesUseCase:
                 final_name=target_name,
                 status=FileProcessingStatus.FAILED_MOVE,
                 email_attempts=email_attempts,
-                error_message=str(error),
+                error_message=self._build_error_message(step="move", error=error),
             )
 
         return FileProcessingResult(
@@ -169,3 +169,8 @@ class SynchronizeEpubFilesUseCase:
 
         stem, extension = filename.rsplit(".", maxsplit=1)
         return stem, f".{extension}"
+
+    @staticmethod
+    def _build_error_message(step: str, error: Exception) -> str:
+        details = str(error).strip() or error.__class__.__name__
+        return f"{step} failed: {details}"
