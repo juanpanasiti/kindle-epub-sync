@@ -1,0 +1,60 @@
+[project]
+name = "kindle-epub-sync"
+version = "0.1.0"
+description = "Synchronize EPUB files from Google Drive to Kindle email delivery"
+readme = "README.md"
+authors = [
+    { name = "Juan Marcelo Panasiti", email = "juanpanasiti@gmail.com" }
+]
+requires-python = ">=3.14"
+dependencies = [
+    "google-api-python-client>=2.178.0",
+    "google-auth>=2.40.0",
+    "python-dotenv>=1.1.0",
+    "schedule>=1.2.0",
+]
+
+[project.scripts]
+kindle-epub-sync = "kindle_epub_sync:main"
+
+[build-system]
+requires = ["uv_build>=0.10.0,<0.11.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "mypy>=1.18.0",
+    "pytest>=8.4.0",
+    "pytest-cov>=6.2.0",
+    "ruff>=0.13.0",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+addopts = "-ra --strict-markers --cov=kindle_epub_sync --cov-report=term-missing --cov-fail-under=90"
+markers = [
+    "integration: marks tests that validate end-to-end behavior across components",
+]
+
+[tool.ruff]
+target-version = "py314"
+line-length = 100
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
+
+[tool.mypy]
+python_version = "3.14"
+mypy_path = "src"
+strict = true
+packages = ["kindle_epub_sync"]
+
+[[tool.mypy.overrides]]
+module = ["google.*", "googleapiclient.*"]
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = ["dotenv.*", "schedule.*"]
+ignore_missing_imports = true
