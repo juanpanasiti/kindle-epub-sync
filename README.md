@@ -185,6 +185,12 @@ Run with compose (recommended):
 docker compose up -d --build
 ```
 
+Update container after pulling new code on server:
+
+```bash
+./update_container.sh
+```
+
 Run a one-time manual sync in container:
 
 ```bash

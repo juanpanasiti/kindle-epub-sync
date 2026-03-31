@@ -19,6 +19,7 @@ def test_loads_required_smtp_settings_with_defaults() -> None:
     )
 
     assert settings.kindle_email == "reader@kindle.com"
+    assert settings.admin_email == "sender@example.com"
     assert settings.smtp_user == "sender@example.com"
     assert settings.smtp_password == "app-password"
     assert settings.smtp_host == DEFAULT_SMTP_HOST
@@ -38,6 +39,19 @@ def test_overrides_default_host_and_port_when_present() -> None:
 
     assert settings.smtp_host == "mail.example.com"
     assert settings.smtp_port == 2525
+
+
+def test_uses_explicit_admin_email_when_present() -> None:
+    settings = load_email_settings(
+        environment={
+            "KINDLE_EMAIL": "reader@kindle.com",
+            "ADMIN_EMAIL": "admin@example.com",
+            "SMTP_USER": "sender@example.com",
+            "SMTP_PASSWORD": "app-password",
+        },
+    )
+
+    assert settings.admin_email == "admin@example.com"
 
 
 def test_raises_when_required_values_are_missing() -> None:

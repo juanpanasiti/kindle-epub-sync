@@ -66,3 +66,15 @@ def _run_once(application_context: ApplicationContext, as_json: bool) -> None:
     report = application_context.use_case.execute(application_context.command)
     output = render_report_as_json(report) if as_json else render_report_as_text(report)
     print(output)
+
+    processed_ebooks = report.succeeded + report.failed
+    if processed_ebooks == 0:
+        return
+
+    subject = "Kindle EPUB sync execution summary"
+    body = render_report_as_text(report)
+
+    try:
+        application_context.email_gateway.send_admin_notification(subject=subject, body=body)
+    except Exception as error:
+        print(f"Admin notification failed: {error}", file=sys.stderr)

@@ -17,11 +17,19 @@ def test_stage5_cli_supports_json_report_output(
         ) -> SynchronizationReport:
             return SynchronizationReport(results=[])
 
+    class FakeEmailGateway:
+        def send_epub(self, filename: str, content: bytes) -> None:
+            return None
+
+        def send_admin_notification(self, subject: str, body: str) -> None:
+            return None
+
     class FakeContext:
         def __init__(self) -> None:
             self.use_case = FakeUseCase()
             self.command = object()
             self.runtime_settings = type("Runtime", (), {"sync_interval_minutes": 5})()
+            self.email_gateway = FakeEmailGateway()
 
     monkeypatch.setattr(
         "kindle_epub_sync.entrypoints.cli.build_application_context",

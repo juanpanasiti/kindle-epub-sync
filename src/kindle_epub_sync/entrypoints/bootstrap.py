@@ -11,6 +11,7 @@ from kindle_epub_sync.application.use_cases.synchronize_epub_files import (
     SynchronizeEpubFilesCommand,
     SynchronizeEpubFilesUseCase,
 )
+from kindle_epub_sync.application.ports.email_gateway import EmailGateway
 from kindle_epub_sync.entrypoints.settings import RuntimeSettings, load_runtime_settings
 from kindle_epub_sync.infrastructure.email.settings import load_email_settings
 from kindle_epub_sync.infrastructure.email.smtp_gateway import SmtpEmailGateway
@@ -26,6 +27,7 @@ class ApplicationContext:
     use_case: SynchronizeEpubFilesUseCase
     command: SynchronizeEpubFilesCommand
     runtime_settings: RuntimeSettings
+    email_gateway: EmailGateway
 
 
 def build_application_context(
@@ -65,6 +67,7 @@ def build_application_context(
         use_case=use_case,
         command=command,
         runtime_settings=runtime_settings,
+        email_gateway=email_gateway,
     )
 
 

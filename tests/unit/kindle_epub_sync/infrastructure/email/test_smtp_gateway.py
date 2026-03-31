@@ -100,3 +100,30 @@ def test_send_epub_propagates_smtp_errors() -> None:
         raise AssertionError("Expected RuntimeError to be raised")
     except RuntimeError as error:
         assert str(error) == "smtp auth failed"
+
+
+def test_send_admin_notification_sends_plain_text_message_to_admin() -> None:
+    settings = EmailSettings(
+        kindle_email="reader@kindle.com",
+        smtp_user="sender@example.com",
+        smtp_password="app-password",
+        admin_email="admin@example.com",
+    )
+
+    fake_smtp_client = FakeSmtpClient()
+
+    gateway = SmtpEmailGateway(
+        settings=settings,
+        smtp_client_factory=lambda **_: fake_smtp_client,
+    )
+
+    gateway.send_admin_notification(
+        subject="Kindle EPUB sync execution summary",
+        body="Synchronization summary\n- succeeded: 1",
+    )
+
+    assert len(fake_smtp_client.sent_messages) == 1
+    message = fake_smtp_client.sent_messages[0]
+    assert message["To"] == "admin@example.com"
+    assert message["Subject"] == "Kindle EPUB sync execution summary"
+    assert "succeeded: 1" in message.get_content()

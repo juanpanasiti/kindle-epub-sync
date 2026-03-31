@@ -14,6 +14,7 @@ class EmailSettings:
     kindle_email: str
     smtp_user: str
     smtp_password: str
+    admin_email: str = ""
     smtp_host: str = DEFAULT_SMTP_HOST
     smtp_port: int = DEFAULT_SMTP_PORT
 
@@ -32,11 +33,14 @@ def load_email_settings(environment: Mapping[str, str]) -> EmailSettings:
     if not smtp_password:
         raise ValueError("Missing required environment variable: SMTP_PASSWORD")
 
+    admin_email = environment.get("ADMIN_EMAIL", smtp_user)
+
     smtp_host = environment.get("SMTP_HOST", DEFAULT_SMTP_HOST)
     smtp_port = _parse_smtp_port(environment.get("SMTP_PORT"))
 
     return EmailSettings(
         kindle_email=kindle_email,
+        admin_email=admin_email,
         smtp_user=smtp_user,
         smtp_password=smtp_password,
         smtp_host=smtp_host,

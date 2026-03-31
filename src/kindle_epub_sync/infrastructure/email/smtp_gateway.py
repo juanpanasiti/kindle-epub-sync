@@ -55,6 +55,19 @@ class SmtpEmailGateway(EmailGateway):
             filename=filename,
         )
 
+        self._send_message(message)
+
+    def send_admin_notification(self, subject: str, body: str) -> None:
+        message = EmailMessage()
+        message["From"] = self._settings.smtp_user
+        message["To"] = self._settings.admin_email or self._settings.smtp_user
+        message["Subject"] = subject
+        message.set_content(body)
+
+        self._send_message(message)
+
+    def _send_message(self, message: EmailMessage) -> None:
+
         with self._smtp_client_factory(
             host=self._settings.smtp_host,
             port=self._settings.smtp_port,
